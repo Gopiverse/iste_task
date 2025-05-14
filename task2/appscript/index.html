@@ -34,11 +34,9 @@
 
 
     <script>
-      // File input button
       const fileInput = document.getElementById('filename');
       const clearButton = document.getElementById('clearButton');
 
-      // Event listener for the "Clear" button
       clearButton.addEventListener('click', (e) => {
           e.preventDefault();
           console.log("Clear button clicked.");
@@ -57,7 +55,7 @@
           reader.onload = function (e) {
               console.log("File read successfully.");
 
-              const fileData = e.target.result.replace(/^.*,/, ''); // Remove base64 prefix
+              const fileData = e.target.result.replace(/^.*,/, ''); 
               console.log("File Data:", fileData);
 
               const mimeType = e.target.result.match(/^.*(?=;)/)[0];
@@ -66,7 +64,6 @@
               const fileName = e.target.fileName;
               console.log("File Name:", fileName);
 
-              // Update the form with hidden fields
               const html = `
                   <input type="hidden" name="fileData" value="${fileData}">
                   <input type="hidden" name="mimeType" value="${mimeType}">
@@ -78,7 +75,6 @@
           reader.readAsDataURL(file);
       });
 
-      //display form data
       document.getElementById('formDataBtn').addEventListener('click', () => {
           const sheet = document.getElementById('sheetView');
           sheet.style.display = sheet.style.display === 'none' ? 'block' : 'none';
@@ -90,7 +86,6 @@
           e.preventDefault();
           console.log("Form submitted. Sending data to backend...");
 
-          // Log form data for debugging
           const formData = new FormData(form);
           for (let [key, value] of formData.entries()) {
               console.log(`${key}: ${value}`);
