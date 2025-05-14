@@ -17,8 +17,6 @@
     </table>
 </body>
 
-    
-
 
     <script src="script.js"></script>
 
@@ -27,71 +25,3 @@
 
 
 
-<!-- // Original code from https://github.com/jamiewilson/form-to-google-sheets
-// Updated for 2021 and ES6 standards
-
-const sheetName = 'html_form'
-const scriptProp = PropertiesService.getScriptProperties()
-
-function initialSetup () {
-  const activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet()
-  scriptProp.setProperty('key', activeSpreadsheet.getId())
-}
-
-// console.log(activeSpreadsheet);
-
-function doPost (e) {
-  const lock = LockService.getScriptLock()
-  lock.tryLock(10000)
-
-  try {
-    const doc = SpreadsheetApp.openById(scriptProp.getProperty('key'))
-    const sheet = doc.getSheetByName(sheetName)
-
-    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0]
-    const nextRow = sheet.getLastRow() + 1
-
-    const newRow = headers.map(header => e.parameter[header])
-
-    sheet.getRange(nextRow, 1, 1, newRow.length).setValues([newRow])
-
-   return HtmlService.createHtmlOutput(`
-      <script>
-        alert("Form submitted successfully!");
-        window.location.href = "index.html";
-      </script>
-    `);
-  } catch (err) {
-  return HtmlService.createHtmlOutput(`
-    <script>
-      alert("Error submitting form: ${err.message}");
-      window.history.back();
-    </script>
-  `);
-  } 
-
-  finally {
-    lock.releaseLock()
-  }
-}
-
-function saveFile(e) {
-  var blob = Utilities.newBlob(e.bytes, e.mimeType, e.filename);
-  DriveApp.createFile(blob);
-  return "Done.";
-} -->
-
-
-<!-- function doGet(e) {
-    var x = HtmlService.createTemplateFromFile("");
-    var y = x.evaluate();
-    var z = z.setFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
-    return z;
-}
-
-function getSheetData() {
-    var a = SpreadsheetApp.getSpreadsheet();
-    var b = a.getSheetByName('Sheet1');
-    var c = b.getDataRange();
-    return c.getValues(); 
-} -->
