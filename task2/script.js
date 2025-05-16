@@ -1,48 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML FORM</title>
-</head>
-<body>
-   <form method="POST" enctype="multipart/form-data" name="google-sheet" action="<?= url ?>">
-
-        <label for="fname">First name</label><br>
-        <input type="text" id="fname" name="First name" value=""><br><br>
-        <label for="lname">Last name</label><br>
-        <input type="text" id="lname" name="Last name" value=""><br><br>
-        <label for="email">Email</label><br>
-        <input type="text" id="email" name="Email" value=""><br><br>
-        
-        <label for="filename">Upload File</label><br>
-        <input type="file" id="filename" name="filename" required><br><br>
-
-        <button type="button" id="clearButton">Clear</button><br><br>
-
-        <div id="data"></div> 
-        
-        <button type="submit">Submit</button><br><br>
-        <button type="button" id="formDataBtn">Form data</button>
-
-    </form>
-    <div id="sheetView" style="display:none; margin-top: 20px;">
-      <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRKfyLE27-55ts7O9AQ9YsdrlWiE7XDsKfcXjYSD50qkxTT9SwfrRZUai--7dVCfi3z6uwsDmgorhwY/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false" 
-              width="100%" height="600px" frameborder="0">
-      </iframe>
-    </div>
-
-
-    <script>
-      // File input button
+// File input button
       const fileInput = document.getElementById('filename');
+      const formDetails = document.getElementById('myForm');
       const clearButton = document.getElementById('clearButton');
 
       // Event listener for the "Clear" button
       clearButton.addEventListener('click', (e) => {
           e.preventDefault();
           console.log("Clear button clicked.");
-          fileInput.value = '';
+          formDetails.reset();
           document.getElementById("data").innerHTML = '';
       });
 
@@ -79,10 +44,11 @@
       });
 
       //display form data
-      document.getElementById('formDataBtn').addEventListener('click', () => {
-          const sheet = document.getElementById('sheetView');
-          sheet.style.display = sheet.style.display === 'none' ? 'block' : 'none';
-      });
+document.getElementById('formDataBtn').addEventListener('click', () => {
+    window.open('display.html', '_blank');
+});
+
+
 
       // After clicking submit, send the form data to the Apps Script backend
       const form = document.forms['google-sheet'];
@@ -101,13 +67,12 @@
               body: formData
           })
           .then(response => {
-              console.log("Response received from server:", response);
-              alert("Thanks for contacting us!!");
+              return response.text();
           })
+          .then(data => {
+              alert("Thanks for contacting us!!");
+          })  
           .catch(error => {
               console.error("Error in form submission:", error.message);
           });
       });
-    </script>
-</body>
-</html>
