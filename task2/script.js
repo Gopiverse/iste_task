@@ -1,121 +1,78 @@
-<<<<<<< HEAD:task2/script.js
-// File input button
-=======
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML FORM</title>
-</head>
-<body>
-   <form method="POST" enctype="multipart/form-data" name="google-sheet" action="<?= url ?>">
 
-        <label for="fname">First name</label><br>
-        <input type="text" id="fname" name="First name" value=""><br><br>
-        <label for="lname">Last name</label><br>
-        <input type="text" id="lname" name="Last name" value=""><br><br>
-        <label for="email">Email</label><br>
-        <input type="text" id="email" name="Email" value=""><br><br>
-        
-        <label for="filename">Upload File</label><br>
-        <input type="file" id="filename" name="filename" required><br><br>
+const fileInput = document.getElementById('filename');
+const formDetails = document.getElementById('myForm');
+const clearButton = document.getElementById('clearButton');
 
-        <button type="button" id="clearButton">Clear</button><br><br>
+clearButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    console.log("Clear button clicked.");
+    formDetails.reset();
+    document.getElementById("data").innerHTML = '';
+});
 
-        <div id="data"></div> 
-        
-        <button type="submit">Submit</button><br><br>
-        <button type="button" id="formDataBtn">Form data</button>
+// Convert file to base64 encoded string for sending to backend
+fileInput.addEventListener('change', function () {
+    const file = this.files[0];
+    console.log("File selected:", file);
 
-    </form>
-    <div id="sheetView" style="display:none; margin-top: 20px;">
-      <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRKfyLE27-55ts7O9AQ9YsdrlWiE7XDsKfcXjYSD50qkxTT9SwfrRZUai--7dVCfi3z6uwsDmgorhwY/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false" 
-              width="100%" height="600px" frameborder="0">
-      </iframe>
-    </div>
+    const reader = new FileReader();
+    reader.fileName = file.name;
+    
+    reader.onload = function (e) {
+    console.log("File read successfully.");
+    
+    const fileData = e.target.result.replace(/^.*,/, ''); 
+    console.log("File Data:", fileData);
+    
+    const mimeType = e.target.result.match(/^.*(?=;)/)[0];
+    console.log("MIME Type:", mimeType);
+    
+    const fileName = e.target.fileName;
+    console.log("File Name:", fileName);
+    
+    const html = `
+    <input type="hidden" name="fileData" value="${fileData}">
+    <input type="hidden" name="mimeType" value="${mimeType}">
+    <input type="hidden" name="fileName" value="${fileName}">
+    `;
+    document.getElementById("data").innerHTML = html;
+};
 
+reader.readAsDataURL(file);
+});
 
-    <script>
->>>>>>> d2f334482a3f771c844b02fe551cb12d6ddbe4c6:task2/appscript/index.html
-      const fileInput = document.getElementById('filename');
-      const formDetails = document.getElementById('myForm');
-      const clearButton = document.getElementById('clearButton');
-
-      clearButton.addEventListener('click', (e) => {
-          e.preventDefault();
-          console.log("Clear button clicked.");
-          formDetails.reset();
-          document.getElementById("data").innerHTML = '';
-      });
-
-      // Convert file to base64 encoded string for sending to backend
-      fileInput.addEventListener('change', function () {
-          const file = this.files[0];
-          console.log("File selected:", file);
-          
-          const reader = new FileReader();
-          reader.fileName = file.name;
-
-          reader.onload = function (e) {
-              console.log("File read successfully.");
-
-              const fileData = e.target.result.replace(/^.*,/, ''); 
-              console.log("File Data:", fileData);
-
-              const mimeType = e.target.result.match(/^.*(?=;)/)[0];
-              console.log("MIME Type:", mimeType);
-
-              const fileName = e.target.fileName;
-              console.log("File Name:", fileName);
-
-              const html = `
-                  <input type="hidden" name="fileData" value="${fileData}">
-                  <input type="hidden" name="mimeType" value="${mimeType}">
-                  <input type="hidden" name="fileName" value="${fileName}">
-              `;
-              document.getElementById("data").innerHTML = html;
-          };
-
-          reader.readAsDataURL(file);
-      });
-
-<<<<<<< HEAD:task2/script.js
-      //display form data
 document.getElementById('formDataBtn').addEventListener('click', () => {
-    window.open('display.html', '_blank');
+window.open('display.html', '_blank');
 });
 
 
-=======
-      document.getElementById('formDataBtn').addEventListener('click', () => {
-          const sheet = document.getElementById('sheetView');
-          sheet.style.display = sheet.style.display === 'none' ? 'block' : 'none';
-      });
->>>>>>> d2f334482a3f771c844b02fe551cb12d6ddbe4c6:task2/appscript/index.html
+document.getElementById('formDataBtn').addEventListener('click', () => {
+const sheet = document.getElementById('sheetView');
+sheet.style.display = sheet.style.display === 'none' ? 'block' : 'none';
+});
 
-      // After clicking submit, send the form data to the Apps Script backend
-      const form = document.forms['google-sheet'];
-      form.addEventListener('submit', (e) => {
-          e.preventDefault();
-          console.log("Form submitted. Sending data to backend...");
+// After clicking submit, send the form data to the Apps Script backend
+const form = document.forms['google-sheet'];
+form.addEventListener('submit', (e) => {
+e.preventDefault();
+console.log("Form submitted. Sending data to backend...");
 
-          const formData = new FormData(form);
-          for (let [key, value] of formData.entries()) {
-              console.log(`${key}: ${value}`);
-          }
+const formData = new FormData(form);
+for (let [key, value] of formData.entries()) {
+console.log(`${key}: ${value}`);
+}
 
-          fetch(form.action, { 
-              method: 'POST', 
-              body: formData
-          })
-          .then(response => {
-              return response.text();
-          })
-          .then(data => {
-              alert("Thanks for contacting us!!");
-          })  
-          .catch(error => {
-              console.error("Error in form submission:", error.message);
-          });
-      });
+fetch(form.action, { 
+method: 'POST', 
+body: formData
+})
+.then(response => {
+return response.text();
+})
+.then(data => {
+alert("Thanks for contacting us!!");
+})  
+.catch(error => {
+console.error("Error in form submission:", error.message);
+});
+});
